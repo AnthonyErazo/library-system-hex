@@ -1,0 +1,36 @@
+-- Datos de prueba para clientes
+INSERT INTO cliente (id, nombres, apellidos, dni, edad) VALUES 
+('550e8400-e29b-41d4-a716-446655440001', 'Juan Carlos', 'García López', '12345678', 25),
+('550e8400-e29b-41d4-a716-446655440002', 'María Elena', 'Rodríguez Silva', '87654321', 30),
+('550e8400-e29b-41d4-a716-446655440003', 'Carlos Alberto', 'Mendoza Ruiz', '11223344', 35),
+('550e8400-e29b-41d4-a716-446655440004', 'Ana Sofía', 'Hernández Torres', '44332211', 28),
+('550e8400-e29b-41d4-a716-446655440005', 'Pedro Luis', 'Martínez Cruz', '55667788', 42);
+
+-- Datos de prueba para libros
+INSERT INTO libro (id, nombre, autor, isbn, estado) VALUES 
+('660e8400-e29b-41d4-a716-446655440001', 'Cien años de soledad', 'Gabriel García Márquez', '9780307474728', true),
+('660e8400-e29b-41d4-a716-446655440002', 'Don Quijote de la Mancha', 'Miguel de Cervantes', '9788424116682', true),
+('660e8400-e29b-41d4-a716-446655440003', 'El Principito', 'Antoine de Saint-Exupéry', '9780156012195', true),
+('660e8400-e29b-41d4-a716-446655440004', '1984', 'George Orwell', '9780451524935', true),
+('660e8400-e29b-41d4-a716-446655440005', 'Crónica de una muerte anunciada', 'Gabriel García Márquez', '9780307387264', false),
+('660e8400-e29b-41d4-a716-446655440006', 'La Casa de los Espíritus', 'Isabel Allende', '9780553383805', true),
+('660e8400-e29b-41d4-a716-446655440007', 'Rayuela', 'Julio Cortázar', '9780394752846', true),
+('660e8400-e29b-41d4-a716-446655440008', 'Pedro Páramo', 'Juan Rulfo', '9780802133908', false);
+
+-- Datos de prueba para pedidos
+INSERT INTO pedidos (id, fecha_pedido, cliente_id, estado) VALUES 
+('770e8400-e29b-41d4-a716-446655440001', '2025-09-25 10:30:00', '550e8400-e29b-41d4-a716-446655440001', true),
+('770e8400-e29b-41d4-a716-446655440002', '2025-09-26 14:15:00', '550e8400-e29b-41d4-a716-446655440002', true),
+('770e8400-e29b-41d4-a716-446655440003', '2025-09-27 09:45:00', '550e8400-e29b-41d4-a716-446655440003', false),
+('770e8400-e29b-41d4-a716-446655440004', '2025-09-28 16:20:00', '550e8400-e29b-41d4-a716-446655440001', true),
+('770e8400-e29b-41d4-a716-446655440005', '2025-09-29 11:00:00', '550e8400-e29b-41d4-a716-446655440004', true);
+
+-- Datos de prueba para items de pedidos
+INSERT INTO pedido_items (id, pedido_id, libro_id) VALUES 
+('880e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001'),
+('880e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440003'),
+('880e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002'),
+('880e8400-e29b-41d4-a716-446655440004', '770e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440004'),
+('880e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440006'),
+('880e8400-e29b-41d4-a716-446655440006', '770e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440007'),
+('880e8400-e29b-41d4-a716-446655440007', '770e8400-e29b-41d4-a716-446655440005', '660e8400-e29b-41d4-a716-446655440005');

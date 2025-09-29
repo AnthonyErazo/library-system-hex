@@ -1,0 +1,14 @@
+# Ignorar archivos innecesarios para Docker
+# target/  # Comentado para permitir copia del JAR compilado
+*.log
+.git/
+.gitignore
+README.md
+*.md
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db

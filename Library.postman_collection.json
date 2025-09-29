@@ -1,0 +1,1578 @@
+{
+	"info": {
+		"_postman_id": "de4052e3-7ba3-44fd-ac88-15f253d8211f",
+		"name": "Library",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28146002"
+	},
+	"item": [
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"const id = res.id ?? null;\r",
+									"const dni = res.client.dni ?? null;\r",
+									"\r",
+									"pm.test(\"DNI encontrado en la respuesta\", () => {\r",
+									"  pm.expect(id, \"No se pudo extraer 'dni'\").to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ID encontrado en la respuesta\", () => {\r",
+									"  pm.expect(id, \"No se pudo extraer 'id'\").to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"order_id\", String(id));\r",
+									"pm.collectionVariables.set(\"dni\", String(dni));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"clientId\": \"{{client_id}}\",\r\n  \"bookIds\": [\r\n    \"{{book_id}}\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/pedidos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientId\": \"{{client_id}}\",\r\n  \"bookIds\": [\r\n    \"{{book_id}}\"\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/pedidos",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"pedidos"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:37 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"6f0bea3c-fdcc-4372-94b1-a7f00f293e98\",\n    \"orderDate\": \"2025-09-29T14:10:37.7254063\",\n    \"client\": {\n        \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n        \"names\": \"strisdasng\",\n        \"surnames\": \"stdsaring\",\n        \"dni\": \"64467910\",\n        \"age\": 18\n    },\n    \"status\": true,\n    \"books\": [\n        {\n            \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n            \"name\": \"stringddd\",\n            \"author\": \"stringsdsa\",\n            \"isbn\": \"9513173718758\",\n            \"status\": false\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "getOneById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"const dni = res.client.dni ?? null;\r",
+									"\r",
+									"pm.test(\"DNI encontrado en la respuesta\", () => {\r",
+									"  pm.expect(id, \"No se pudo extraer 'dni'\").to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"dni\", String(dni));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/pedidos/{{order_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/pedidos/{{order_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"pedidos",
+										"{{order_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:40 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"6f0bea3c-fdcc-4372-94b1-a7f00f293e98\",\n    \"orderDate\": \"2025-09-29T14:10:37.725406\",\n    \"client\": {\n        \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n        \"names\": \"strisdasng\",\n        \"surnames\": \"stdsaring\",\n        \"dni\": \"64467910\",\n        \"age\": 18\n    },\n    \"status\": true,\n    \"books\": [\n        {\n            \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n            \"name\": \"stringddd\",\n            \"author\": \"stringsdsa\",\n            \"isbn\": \"9513173718758\",\n            \"status\": false\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "getOneByDni",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/pedidos/cliente/dni/{{dni}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"cliente",
+								"dni",
+								"{{dni}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/pedidos/cliente/dni/{{dni}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"pedidos",
+										"cliente",
+										"dni",
+										"{{dni}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:45 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"6f0bea3c-fdcc-4372-94b1-a7f00f293e98\",\n        \"orderDate\": \"2025-09-29T14:10:37.725406\",\n        \"client\": {\n            \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n            \"names\": \"strisdasng\",\n            \"surnames\": \"stdsaring\",\n            \"dni\": \"64467910\",\n            \"age\": 18\n        },\n        \"status\": true,\n        \"books\": [\n            {\n                \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n                \"name\": \"stringddd\",\n                \"author\": \"stringsdsa\",\n                \"isbn\": \"9513173718758\",\n                \"status\": false\n            }\n        ]\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "getOneById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"libros",
+								"{{book_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"libros",
+										"{{book_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n    \"name\": \"string\",\n    \"author\": \"string\",\n    \"isbn\": \"7808417796217\",\n    \"status\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"stringddd\",\n  \"author\": \"stringsdsa\",\n  \"isbn\": \"9513173718758\",\n  \"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"libros",
+								"{{book_id}}"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"stringddd\",\n  \"author\": \"stringsdsa\",\n  \"isbn\": \"9513173718758\",\n  \"status\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"libros",
+										"{{book_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:12 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n    \"name\": \"stringddd\",\n    \"author\": \"stringsdsa\",\n    \"isbn\": \"9513173718758\",\n    \"status\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"libros",
+								"{{book_id}}"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/libros/{{book_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"libros",
+										"{{book_id}}"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:14:11 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"const res = pm.response.json();",
+									"const id = res.id ?? null;",
+									"",
+									"pm.test(\"ID encontrado en la respuesta\", () => {",
+									"  pm.expect(id, \"No se pudo extraer 'id'\").to.be.ok;",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"book_id\", String(id));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"string\",\n  \"author\": \"string\",\n  \"isbn\": \"7808417796217\",\n  \"status\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/libros",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"libros"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"string\",\n  \"author\": \"string\",\n  \"isbn\": \"7808417796217\",\n  \"status\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/libros",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"libros"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:09:55 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n    \"name\": \"string\",\n    \"author\": \"string\",\n    \"isbn\": \"7808417796217\",\n    \"status\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "getAll",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/libros",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"libros"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/libros",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"libros"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n        \"name\": \"stringddd\",\n        \"author\": \"stringsdsa\",\n        \"isbn\": \"9513173718758\",\n        \"status\": true\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "getOneById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"const dni = res.dni ?? null;\r",
+									"\r",
+									"pm.test(\"DNI encontrado en la respuesta\", () => {\r",
+									"  pm.expect(id, \"No se pudo extraer 'dni'\").to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"dni\", String(dni));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clientes",
+								"{{client_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clientes",
+										"{{client_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:20 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n    \"names\": \"string\",\n    \"surnames\": \"string\",\n    \"dni\": \"38798242\",\n    \"age\": 120\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									"",
+									"const res = pm.response.json();",
+									"const dni = res.dni ?? null;",
+									"",
+									"pm.test(\"DNI encontrado en la respuesta\", () => {",
+									"  pm.expect(id, \"No se pudo extraer 'dni'\").to.be.ok;",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"dni\", String(dni));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"names\": \"strisdasng\",\n  \"surnames\": \"stdsaring\",\n  \"dni\": \"64467910\",\n  \"age\": 18\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clientes",
+								"{{client_id}}"
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"names\": \"strisdasng\",\n  \"surnames\": \"stdsaring\",\n  \"dni\": \"64467910\",\n  \"age\": 18\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clientes",
+										"{{client_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:26 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n    \"names\": \"strisdasng\",\n    \"surnames\": \"stdsaring\",\n    \"dni\": \"64467910\",\n    \"age\": 18\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clientes",
+								"{{client_id}}"
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/clientes/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clientes",
+										"{{client_id}}"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:14:55 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"const res = pm.response.json();",
+									"const id = res.id ?? null;",
+									"const dni = res.dni ?? null;",
+									"",
+									"pm.test(\"DNI encontrado en la respuesta\", () => {",
+									"  pm.expect(id, \"No se pudo extraer 'dni'\").to.be.ok;",
+									"});",
+									"",
+									"pm.test(\"ID encontrado en la respuesta\", () => {",
+									"  pm.expect(id, \"No se pudo extraer 'id'\").to.be.ok;",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"client_id\", String(id));",
+									"pm.collectionVariables.set(\"dni\", String(dni));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"names\": \"string\",\n  \"surnames\": \"string\",\n  \"dni\": \"38798242\",\n  \"age\": 120\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/clientes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clientes"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"names\": \"string\",\n  \"surnames\": \"string\",\n  \"dni\": \"38798242\",\n  \"age\": 120\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/clientes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clientes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:00 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n    \"names\": \"string\",\n    \"surnames\": \"string\",\n    \"dni\": \"38798242\",\n    \"age\": 120\n}"
+						}
+					]
+				},
+				{
+					"name": "getAll",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/clientes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"clientes"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/clientes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clientes"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:10:31 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"6fbc7c49-371a-40cb-bd95-72574f03d6ca\",\n        \"names\": \"strisdasng\",\n        \"surnames\": \"stdsaring\",\n        \"dni\": \"64467910\",\n        \"age\": 18\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Query",
+			"item": [
+				{
+					"name": "getRentalBooksByDni",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/consultas/libros-alquilados/cliente/{{dni}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"consultas",
+								"libros-alquilados",
+								"cliente",
+								"{{dni}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/consultas/libros-alquilados/cliente/{{dni}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"consultas",
+										"libros-alquilados",
+										"cliente",
+										"{{dni}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:11:22 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n        \"name\": \"stringddd\",\n        \"author\": \"stringsdsa\",\n        \"isbn\": \"9513173718758\",\n        \"status\": false\n    },\n    {\n        \"id\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n        \"name\": \"stringddd\",\n        \"author\": \"stringsdsa\",\n        \"isbn\": \"9513173718758\",\n        \"status\": false\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Rental",
+			"item": [
+				{
+					"name": "request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"const id = res.id ?? null;\r",
+									"\r",
+									"pm.test(\"ID encontrado en la respuesta\", () => {\r",
+									"  pm.expect(id, \"No se pudo extraer 'id'\").to.be.ok;\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"request_id\", String(id));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"clientDni\": \"{{dni}}\",\r\n  \"bookId\": \"{{book_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/alquiler/solicitar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"alquiler",
+								"solicitar"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"clientDni\": \"{{dni}}\",\r\n  \"bookId\": \"{{book_id}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/alquiler/solicitar",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"alquiler",
+										"solicitar"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:11:06 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"9b453691-1e2b-4f4e-b644-b186c9b17c1c\",\n    \"requestId\": \"9b453691-1e2b-4f4e-b644-b186c9b17c1c\",\n    \"clientDni\": \"64467910\",\n    \"bookId\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n    \"requestDate\": \"2025-09-29T14:11:06.6940672\",\n    \"processedDate\": null,\n    \"status\": \"PENDING\",\n    \"message\": \"Rental pending\"\n}"
+						}
+					]
+				},
+				{
+					"name": "getStatus",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/alquiler/estado/{{request_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"alquiler",
+								"estado",
+								"{{request_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/alquiler/estado/{{request_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"alquiler",
+										"estado",
+										"{{request_id}}"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 29 Sep 2025 19:11:13 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"9b453691-1e2b-4f4e-b644-b186c9b17c1c\",\n    \"requestId\": \"9b453691-1e2b-4f4e-b644-b186c9b17c1c\",\n    \"clientDni\": \"64467910\",\n    \"bookId\": \"16bfc7f9-fabf-418d-9cf5-4dd21181828b\",\n    \"requestDate\": \"2025-09-29T14:11:06.694067\",\n    \"processedDate\": null,\n    \"status\": \"APPROVED\",\n    \"message\": \"Rental approved\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		},
+		{
+			"key": "book_id",
+			"value": ""
+		},
+		{
+			"key": "client_id",
+			"value": ""
+		},
+		{
+			"key": "order_id",
+			"value": ""
+		},
+		{
+			"key": "dni",
+			"value": ""
+		},
+		{
+			"key": "request_id",
+			"value": ""
+		}
+	]
+}
