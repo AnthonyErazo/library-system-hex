@@ -1,252 +1,151 @@
 # Biblioteca Hexagonal
 
-Sistema de gestión de biblioteca implementado con arquitectura hexagonal, Spring Boot, Kafka y MySQL.
+Backend para gestionar clientes, libros, pedidos y alquileres. El proyecto separa dominio, casos de uso y adaptadores mediante arquitectura hexagonal, y combina una API REST con un flujo asíncrono basado en Apache Kafka.
 
-## Descripción
+## Funcionalidades
 
-Sistema que permite gestionar clientes, libros, pedidos y alquileres de manera asíncrona utilizando eventos de Kafka. Implementa los principios de arquitectura hexagonal con separación clara entre dominio, aplicación e infraestructura.
-
-## Características
-
-- ✅ Gestión de clientes, libros y pedidos
-- ✅ Alquiler asíncrono con Kafka (2 topics: `alquiler-requests` y `alquiler-responses`)
-- ✅ Consultas de libros alquilados por cliente
-- ✅ Arquitectura hexagonal con puertos y adaptadores
-- ✅ Soporte para JDBC y JPA
-- ✅ Base de datos MySQL
-- ✅ Documentación Swagger/OpenAPI
+- CRUD de clientes y libros.
+- Creación y consulta de pedidos.
+- Solicitud asíncrona de alquileres.
+- Consulta del estado mediante un `requestId`.
+- Consulta de libros alquilados por DNI del cliente.
+- Puertos de persistencia con adaptadores JDBC y JPA.
+- Perfiles H2 y MySQL, Swagger y despliegue con Docker Compose.
 
 ## Tecnologías
 
-- **Java 17**
-- **Spring Boot 3.3.2**
-- **Apache Kafka 3.7**
-- **MySQL 8**
-- **Maven**
-- **Docker & Docker Compose**
+Java 17 · Spring Boot 3.3.2 · Spring Web · Spring Data JPA · JDBC · Apache Kafka 3.7 · H2 · MySQL 8 · Maven · Docker · OpenAPI/Swagger
 
-## Despliegue Local
+## Arquitectura hexagonal
 
-### Prerrequisitos
-- Java 17+
-- Maven 3.6+
-- Docker & Docker Compose
+![Arquitectura hexagonal del sistema de biblioteca](docs/diagrams/hexagonal-architecture.png)
 
-### 1. Clonar el repositorio
+- **Dominio:** entidades y contratos de salida sin depender de controladores o bases de datos.
+- **Aplicación:** commands, DTOs, mappers y casos de uso que coordinan las reglas.
+- **Entrada:** controladores REST y consumidores Kafka.
+- **Salida:** adaptadores JDBC/JPA y publicación de eventos Kafka.
+
+### Flujo asíncrono de alquiler
+
+![Secuencia asíncrona de una solicitud de alquiler](docs/diagrams/rental-sequence.png)
+
+La solicitud crea primero una orden pendiente y publica un evento en `alquiler-requests`. El consumidor simula una evaluación de aproximadamente dos segundos, publica `APPROVED` o `DENIED` en `alquiler-responses` y otro consumidor actualiza la orden. La implementación actual utiliza una decisión aleatoria con una probabilidad aproximada de aprobación del 70 %, por lo que este procesamiento representa una simulación de negocio.
+
+## Endpoints
+
+Base URL: `http://localhost:8082/api/v1`
+
+### Clientes y libros
+
+| Recurso | Operaciones |
+| --- | --- |
+| `/clientes` | `GET`, `POST` |
+| `/clientes/{id}` | `GET`, `PUT`, `DELETE` |
+| `/libros` | `GET`, `POST` |
+| `/libros/{id}` | `GET`, `PUT`, `DELETE` |
+
+### Pedidos, alquileres y consultas
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| `POST` | `/pedidos` | Crear un pedido |
+| `GET` | `/pedidos/{id}` | Consultar un pedido |
+| `GET` | `/pedidos/cliente/dni/{dni}` | Consultar pedidos por cliente |
+| `POST` | `/alquiler/solicitar` | Crear una solicitud y publicar el evento |
+| `GET` | `/alquiler/estado/{requestId}` | Consultar el estado actual |
+| `GET` | `/consultas/libros-alquilados/cliente/{dni}` | Consultar libros alquilados por DNI |
+
+Swagger UI está disponible en `http://localhost:8082/swagger`.
+
+## Ejecución local
+
+Requisitos: JDK 17, Maven 3.6+ y Docker.
+
 ```bash
-git clone <repository-url>
-cd biblioteca-hexagonal
+git clone https://github.com/AnthonyErazo/library-system-hex.git
+cd library-system-hex
+docker compose -f docker-compose-kafka.yml up -d
 ```
 
-### 2. Levantar Kafka (solo infraestructura)
+Para iniciar con H2 en memoria:
+
 ```bash
-docker-compose -f docker-compose-kafka.yml up -d
+mvn spring-boot:run "-Dspring-boot.run.profiles=h2"
 ```
 
-### 3. Configurar base de datos MySQL local
-Crear base de datos `biblioteca` en MySQL local.
+Para usar MySQL local, crea la base `biblioteca`, ajusta las credenciales de `application-mysql.yml` si es necesario y ejecuta:
 
-### 4. Ejecutar la aplicación
-
-#### Con perfil H2 (base de datos en memoria):
 ```bash
-mvn spring-boot:run "-Dspring.profiles.active=h2"
+mvn spring-boot:run "-Dspring-boot.run.profiles=mysql"
 ```
 
-#### Con perfil MySQL (base de datos externa):
+Servicios locales:
+
+| Servicio | URL o conexión |
+| --- | --- |
+| API | `http://localhost:8082` |
+| Swagger UI | `http://localhost:8082/swagger` |
+| H2 Console | `http://localhost:8082/h2-console` |
+| Kafdrop | `http://localhost:19000` |
+| Kafka | `localhost:9094` |
+
+H2 utiliza `jdbc:h2:mem:biblioteca`, usuario `sa` y contraseña vacía.
+
+## Stack completo con Docker
+
 ```bash
-mvn spring-boot:run "-Dspring.profiles.active=mysql"
+docker compose -f docker-compose-full.yml up --build -d
 ```
 
-#### Alternativamente usando variables de entorno:
+Este entorno incluye la API, Kafka, Kafdrop y MySQL. MySQL se publica en el puerto local `3308`; dentro de la red Docker se utiliza `mysql:3306`.
+
+Para detener los servicios:
+
 ```bash
-# H2
-set SPRING_PROFILES_ACTIVE=h2 && mvn spring-boot:run
-
-# MySQL  
-set SPRING_PROFILES_ACTIVE=mysql && mvn spring-boot:run
+docker compose -f docker-compose-full.yml down
 ```
 
-#### En Linux/Mac:
-```bash
-# H2
-SPRING_PROFILES_ACTIVE=h2 mvn spring-boot:run
+## Estructura principal
 
-# MySQL
-SPRING_PROFILES_ACTIVE=mysql mvn spring-boot:run
+```text
+src/main/java/com/example/bibliotecahex/
+├── domain/
+│   ├── model/                 # Entidades, enums y excepciones
+│   └── port/out/persistent/   # Contratos de persistencia y eventos
+├── application/
+│   ├── command/               # Datos de entrada de los casos de uso
+│   ├── dto/                   # Resultados de aplicación
+│   ├── mapper/                # Conversión dominio/DTO
+│   └── usecases/              # Casos de uso por recurso
+└── infrastructure/
+    ├── in/web/                # Controllers, requests, responses y services
+    ├── in/messaging/          # Configuración, consumers y producer Kafka
+    └── out/persistence/       # Adaptadores y repositorios JDBC/JPA
 ```
 
-### 5. Acceder a los servicios
-- **API**: http://localhost:8082
-- **Swagger UI**: http://localhost:8082/swagger-ui.html
-- **Kafdrop (Kafka UI)**: http://localhost:19000
-- **H2 Console** (solo con perfil h2): http://localhost:8082/h2-console
-  - JDBC URL: `jdbc:h2:mem:biblioteca`
-  - Username: `sa`
-  - Password: *(vacío)*
+## Verificación y compilación
 
-## Despliegue Global con Docker
-
-### Levantar todo el stack (Kafka + MySQL + Aplicación)
-```bash
-docker-compose -f docker-compose-full.yml up -d
-```
-
-### Servicios disponibles
-- **API**: http://localhost:8082
-- **Swagger UI**: http://localhost:8082/swagger-ui.html
-- **Kafdrop**: http://localhost:19000
-- **MySQL**: localhost:3308
-
-## Endpoints Principales
-
-### Gestión de Clientes
-- `GET /api/v1/clientes` - Listar clientes
-- `POST /api/v1/clientes` - Crear cliente
-- `GET /api/v1/clientes/{id}` - Obtener cliente
-- `PUT /api/v1/clientes/{id}` - Actualizar cliente
-- `DELETE /api/v1/clientes/{id}` - Eliminar cliente
-
-### Gestión de Libros
-- `GET /api/v1/libros` - Listar libros
-- `POST /api/v1/libros` - Crear libro
-- `GET /api/v1/libros/{id}` - Obtener libro
-- `PUT /api/v1/libros/{id}` - Actualizar libro
-- `DELETE /api/v1/libros/{id}` - Eliminar libro
-
-### Alquiler Asíncrono (Kafka)
-- `POST /api/v1/alquiler/solicitar` - Solicitar alquiler (publica a Kafka)
-- `GET /api/v1/alquiler/estado/{requestId}` - Consultar estado de alquiler
-
-### Consultas
-- `GET /api/v1/consultas/libros-alquilados/cliente/{dni}` - Libros alquilados por cliente
-
-## Configuración
-
-### Perfiles disponibles
-- **h2**: Base de datos H2 en memoria (ideal para desarrollo y pruebas)
-- **mysql**: Base de datos MySQL (para producción)
-
-### Comandos por perfil
-```bash
-# Ejecutar con H2 (Windows PowerShell)
-mvn spring-boot:run "-Dspring.profiles.active=h2"
-
-# Ejecutar con MySQL (Windows PowerShell)
-mvn spring-boot:run "-Dspring.profiles.active=mysql"
-
-# Con variables de entorno (Windows)
-set SPRING_PROFILES_ACTIVE=h2 && mvn spring-boot:run
-set SPRING_PROFILES_ACTIVE=mysql && mvn spring-boot:run
-
-# Linux/Mac
-SPRING_PROFILES_ACTIVE=h2 mvn spring-boot:run
-SPRING_PROFILES_ACTIVE=mysql mvn spring-boot:run
-```
-
-### Variables de entorno
-```bash
-SPRING_PROFILES_ACTIVE=mysql
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/biblioteca
-SPRING_DATASOURCE_USERNAME=root
-SPRING_DATASOURCE_PASSWORD=password
-KAFKA_BOOTSTRAP_SERVERS=localhost:9094
-```
-
-### Datos de prueba
-El sistema incluye datos de prueba que se cargan automáticamente:
-- **5 clientes** con diferentes DNIs y edades
-- **8 libros** de literatura clásica y contemporánea
-- **5 pedidos** con sus respectivos items
-- Algunos libros marcados como no disponibles para probar el sistema
-
-## Arquitectura
-
-```
-src/
-├── main/java/com/example/bibliotecahex/
-│   ├── domain/                 # Capa de dominio
-│   │   ├── model/             # Entidades y VOs
-│   │   └── port/              # Puertos (interfaces)
-│   ├── application/           # Capa de aplicación
-│   │   ├── usecases/          # Casos de uso
-│   │   └── dto/               # DTOs de aplicación
-│   └── infrastructure/        # Capa de infraestructura
-│       ├── in/                # Adaptadores de entrada
-│       │   ├── web/           # Controllers REST
-│       │   └── messaging/     # Consumers Kafka
-│       └── out/               # Adaptadores de salida
-│           ├── persistence/   # Repositorios JDBC/JPA
-│           └── messaging/     # Producers Kafka
-```
-
-## Desarrollo
-
-### Compilar
-```bash
-mvn clean compile
-```
-
-### Ejecutar tests
 ```bash
 mvn test
-```
-
-### Empaquetar
-```bash
 mvn clean package
 ```
 
-### Detener servicios
-```bash
-# Solo Kafka
-docker-compose -f docker-compose-kafka.yml down
+Actualmente el repositorio no contiene casos automatizados en `src/test`; `mvn test` valida la compilación y el ciclo de Maven. Añadir pruebas unitarias de casos de uso y pruebas de integración para los adaptadores sería la siguiente mejora recomendada.
 
-# Stack completo
-docker-compose -f docker-compose-full.yml down
-```
+## Evidencias
 
-## Evidencias de Funcionamiento
+### Solicitud REST
 
-### 1. Alquiler Vía REST (Respuesta Inmediata)
+![Respuesta del endpoint de alquiler](img/sinc.PNG)
 
-Solicitud de alquiler síncrono mediante API REST que crea el pedido inmediatamente en la base de datos:
+### Procesamiento asíncrono
 
-![Alquiler Síncrono](img/sinc.PNG)
+![Procesamiento asíncrono del alquiler](img/asinc.PNG)
 
-*Captura mostrando la respuesta inmediata del endpoint `/api/v1/alquiler/solicitar` con creación directa del pedido.*
+### Trazabilidad en Kafka
 
-### 2. Alquiler Vía Kafka (Eventos Asíncronos)
+![Logs del flujo de eventos Kafka](img/prueba_kafka.PNG)
 
-Procesamiento asíncrono de solicitudes de alquiler utilizando eventos de Kafka:
+---
 
-![Alquiler Asíncrono](img/asinc.PNG)
-
-*Evidencia del flujo asíncrono donde la solicitud se procesa a través de eventos Kafka con respuesta diferida.*
-
-### 3. Logs de Kafka - Flujo de Eventos
-
-Trazabilidad completa del flujo de eventos en los topics de Kafka:
-
-![Logs de Kafka](img/prueba_kafka.PNG)
-
-*Logs del sistema mostrando:*
-- **Publicación de eventos** en topic `alquiler-requests`
-- **Procesamiento de eventos** por el consumer 
-- **Respuesta de eventos** en topic `alquiler-responses`
-- **Actualización en base de datos** con estado final del alquiler
-
-### Flujo Completo Evidenciado
-
-1. ✅ **Petición HTTP** → Endpoint REST recibe solicitud
-2. ✅ **Publicación Kafka** → Evento enviado a `alquiler-requests`
-3. ✅ **Procesamiento** → Consumer procesa y aprueba/rechaza
-4. ✅ **Respuesta Kafka** → Evento enviado a `alquiler-responses`
-5. ✅ **Actualización BD** → Estado del pedido actualizado
-6. ✅ **Trazabilidad** → Logs completos del flujo asíncrono
-
-### Herramientas de Monitoreo
-
-- **Kafdrop**: http://localhost:19000 para visualizar topics y mensajes
-- **Swagger UI**: http://localhost:8082/swagger-ui.html para testing de APIs
-- **H2 Console**: http://localhost:8082/h2-console para inspección de datos
+Última actualización del proyecto: **29 de septiembre de 2025**.
